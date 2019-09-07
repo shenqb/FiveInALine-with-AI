@@ -60,3 +60,6 @@ for(var i = 0; i < 15; i++) {
             }
                     
 ```
+### 关于
+2019.09月度技术探索，参考自：
+https://www.imooc.com/video/11639
