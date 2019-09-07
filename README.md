@@ -1,2 +1,2 @@
 # FiveInOneLine-with-AI
-在线游戏：[点我](https://mrzwh.github.io/Gobang-with-AI/index.html)
+在线游戏Demo：[https://shenqb.github.io/FiveInALine-with-AI/index.html](https://shenqb.github.io/FiveInALine-with-AI/index.html)
