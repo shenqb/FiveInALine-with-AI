@@ -1,10 +1,10 @@
-# FiveInOneLine-with-AI
+# H5人机对战五子棋
 
 在线游戏Demo：[https://shenqb.github.io/FiveInALine-with-AI/index.html](https://shenqb.github.io/FiveInALine-with-AI/index.html)
 
 ### AI算法基本思路：
 * 怎么决定计算机在哪个地方落子？
-遍历整个棋盘上还没落子的交叉点，计算权重，基于AI算法给交叉点计算得分，得分最高的交叉点，即为计算机需要落子的点。
+遍历整个棋盘上还没落子的交叉点，获取它周边八个方向上相邻点的落子情况，分别给人类方和计算机方计算得分，得分最高的交叉点，即为计算机需要落子的点。
 
 ### 难点解析：
 ### 赢法数组：
@@ -63,3 +63,4 @@ for(var i = 0; i < 15; i++) {
 ### 关于
 2019.09月度技术探索，参考自：
 https://www.imooc.com/video/11639
+
