@@ -23,9 +23,9 @@
     var winMethods = []
 
     //人类方赢法统计数组
-    var humanWin = []
+    var humanChessCount = []
     //计算机方赢法统计数组
-    var computerWin = []
+    var computerChessCount = []
 
     //构造棋局
     for (var i = 0; i < 15; i++) {
@@ -44,7 +44,7 @@
     }
 
     //赢法数组：纵向的五子相连，表示一种赢法
-    var count = 0
+    var count = 0 //count表示赢法数组个数
     for(var i = 0; i < 15; i++) {
         for(var j = 0; j<11; j++) {
             for(var k = 0; k < 5; k++) {
@@ -81,9 +81,11 @@
         }
     }
 
+    //count表示共572种赢法（15*15棋局下），初始化双方在572种赢法下的落子情况；
+    // 比如humanWin[i]表示人类方在第i种赢法下的落子情况,连一子则加1，当humanWin[i]=3时表示人类在第i种赢法下连了3颗落子，humanChessCount[i]=5则胜利
     for(var i = 0; i < count; i++) {
-        humanWin[i] = 0
-        computerWin[i] = 0
+        humanChessCount[i] = 0
+        computerChessCount[i] = 0
     }
 
     var me = true
@@ -92,12 +94,7 @@
 
     context.strokeStyle = '#bfbfbf'
 
-    // var logo = new Image()
-    // logo.src = 'images/logo.png'
-    // logo.onload = function () {
-    // 	context.drawImage(logo, 0, 0, 450, 450)
-    // }
-
+    //棋局初始化
     for(var i = 0; i < 15; i++) {
         context.moveTo(15 + i * 30, 15)
         context.lineTo(15 + i * 30, 435)
@@ -106,7 +103,6 @@
         context.lineTo(435, 15 + i * 30)
         context.stroke()
     }
-
 
 
     var oneStep = function (i, j, me) {
@@ -134,11 +130,11 @@
         if (chessBoard[i][j] === 0) {
             oneStep(i, j, me)
             chessBoard[i][j] = 1
-            for(var k = 0; k < count; k++) {
-                if (winMethods[i][j][k]) {
-                    humanWin[k]++
-                    computerWin[k] = 6
-                    if (humanWin[k] == 5) {
+            for(var k = 0; k < count; k++) { //遍历572种赢法
+                if (winMethods[i][j][k]) { //如果在当前落子属于572种赢法下的某一种情况
+                    humanChessCount[k]++ //人类方在第k赢法下落子+1
+                    computerChessCount[k] = -1 //计算机方则在该种情况下不可能胜利了，直接设置为-1（5为胜利）
+                    if (humanChessCount[k] == 5) {
                         window.alert('你赢了')
                         over = true
                     }
@@ -153,52 +149,55 @@
     }
 
     var computerAI = function () {
-        var myScore = []
-        var computerScore = []
+        var humanScore = [] //某个空白位置点上，人类在各种赢法下的汇总分数
+        var computerScore = [] //某个空白位置点上，计算机在各种赢法下的汇总分数
         var max = 0
-        var u = 0, v = 0
+        var u = 0, v = 0 //计算机下一步落子坐标
 
+        //计算机每次落子时，先初始化棋局双方得分，所有点上双方均为0分
         for(var i = 0; i < 15; i++) {
-            myScore[i] = []
+            humanScore[i] = []
             computerScore[i] = []
             for(var j = 0; j< 15; j++) {
-                myScore[i][j] = 0
+                humanScore[i][j] = 0
                 computerScore[i][j] = 0
             }
         }
 
+        //计算机每次落子时，最多遍历15*15*527（约13万）次，逐次递减，重新计算当前棋局双方的得分情况：每个空白位置上会有572种赢法，假设每种赢法下双方的得分情况
         for(var i = 0; i < 15; i++) {
             for(var j = 0; j< 15;j++) {
-                if (chessBoard[i][j] == 0) {
+                if (chessBoard[i][j] == 0) { //遍历棋局的所有空白点，统计双方在这些位置点上的所有种赢法下的汇总分数，这一步是计算机落子的依据
                     for (var k = 0; k < count; k++) {
                         if (winMethods[i][j][k]) {
-                            if (humanWin[k] == 1) {
-                                myScore[i][j] += 200
-                            } else if(humanWin[k] == 2) {
-                                myScore[i][j] += 400
-                            } else if(humanWin[k] == 3) {
-                                myScore[i][j] += 2000
-                            } else if(humanWin[k] == 4) {
-                                myScore[i][j] += 10000
+                            if (humanChessCount[k] == 1) { //假设这个空白位置点（i,j）是人类第k种赢法下的第1颗子，则人类得分+200
+                                humanScore[i][j] += 200
+                            } else if(humanChessCount[k] == 2) { //假设这个空白位置点（i,j）是人类第k种赢法下的第2颗子，则人类得分+400
+                                humanScore[i][j] += 400
+                            } else if(humanChessCount[k] == 3) { //假设这个空白位置点（i,j）是人类第k种赢法下的第3颗子，则人类得分+2000
+                                humanScore[i][j] += 2000
+                            } else if(humanChessCount[k] == 4) { //假设这个空白位置点（i,j）是人类第k种赢法下的第4颗子，则人类得分+10000
+                                humanScore[i][j] += 10000
                             }
 
-                            if (computerWin[k] == 1) {
+                            if (computerChessCount[k] == 1) {
                                 computerScore[i][j] += 220
-                            } else if(computerWin[k] == 2) {
+                            } else if(computerChessCount[k] == 2) {
                                 computerScore[i][j] += 420
-                            } else if(computerWin[k] == 3) {
+                            } else if(computerChessCount[k] == 3) {
                                 computerScore[i][j] += 2100
-                            } else if(computerWin[k] == 4) {
+                            } else if(computerChessCount[k] == 4) {
                                 computerScore[i][j] += 20000
                             }
                         }
                     }
 
-                    if (myScore[i][j] > max) {
-                        max = myScore[i][j]
+                    //取对人类得分最小或者对计算机得分最大的位置进行落子
+                    if (humanScore[i][j] > max) {
+                        max = humanScore[i][j]
                         u = i
                         v = j
-                    } else if(myScore[i][j] == max) {
+                    } else if(humanScore[i][j] == max) {
                         if (computerScore[i][j] > computerScore[u][v]) {
                             u = i
                             v = j
@@ -210,7 +209,7 @@
                         u = i
                         v = j
                     } else if(computerScore[i][j] == max) {
-                        if (myScore[i][j] > myScore[u][v]) {
+                        if (humanScore[i][j] > humanScore[u][v]) {
                             u = i
                             v = j
                         }
@@ -224,9 +223,9 @@
 
         for(var k = 0; k < count; k++) {
             if (winMethods[u][v][k]) {
-                computerWin[k]++
-                humanWin[k] = 6
-                if (computerWin[k] == 5) {
+                computerChessCount[k]++
+                humanChessCount[k] = -1
+                if (computerChessCount[k] == 5) {
                     window.alert('你输了')
                     over = true
                 }
