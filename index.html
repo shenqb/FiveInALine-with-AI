@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>五子棋</title>
+    <title>shenqb-H5五子棋</title>
     <style>
         canvas {
             display: block;
@@ -14,16 +14,20 @@
 <body>
 <canvas id="chess" width="450px" height="450px"></canvas>
 <script>
+    //棋局
     var chessBoard = []
+    //游戏是否结束
     var over = false
 
     // 赢法数组
-    var wins = []
+    var winMethods = []
 
-    // 赢法的统计数组
-    var myWin = []
+    //人类方赢法统计数组
+    var humanWin = []
+    //计算机方赢法统计数组
     var computerWin = []
 
+    //构造棋局
     for (var i = 0; i < 15; i++) {
         chessBoard[i] = []
         for(var j = 0; j < 15; j++) {
@@ -31,52 +35,54 @@
         }
     }
 
+    //构造赢法数组
     for (var i = 0; i < 15; i++) {
-        wins[i] = []
+        winMethods[i] = []
         for(var j = 0; j < 15; j++) {
-            wins[i][j] = []
+            winMethods[i][j] = []
         }
     }
 
+    //赢法数组：纵向的五子相连，表示一种赢法
     var count = 0
     for(var i = 0; i < 15; i++) {
         for(var j = 0; j<11; j++) {
             for(var k = 0; k < 5; k++) {
-                wins[i][j+k][count] = true
+                winMethods[i][j+k][count] = true
             }
             count++
         }
     }
-
+    //赢法数组：横向的五子相连，表示一种赢法
     for(var i = 0; i < 15; i++) {
         for(var j = 0; j<11; j++) {
             for(var k = 0; k < 5; k++) {
-                wins[j+k][i][count] = true
+                winMethods[j+k][i][count] = true
             }
             count++
         }
     }
-
+    //赢法数组：左斜向的五子相连，表示一种赢法
     for(var i = 0; i < 11; i++) {
         for(var j = 0; j<11; j++) {
             for(var k = 0; k < 5; k++) {
-                wins[i+k][j+k][count] = true
+                winMethods[i+k][j+k][count] = true
             }
             count++
         }
     }
-
+    //赢法数组：右斜向的五子相连，表示一种赢法
     for(var i = 0; i < 11; i++) {
         for(var j = 14; j>3; j--) {
             for(var k = 0; k < 5; k++) {
-                wins[i+k][j-k][count] = true
+                winMethods[i+k][j-k][count] = true
             }
             count++
         }
     }
 
     for(var i = 0; i < count; i++) {
-        myWin[i] = 0
+        humanWin[i] = 0
         computerWin[i] = 0
     }
 
@@ -129,10 +135,10 @@
             oneStep(i, j, me)
             chessBoard[i][j] = 1
             for(var k = 0; k < count; k++) {
-                if (wins[i][j][k]) {
-                    myWin[k]++
+                if (winMethods[i][j][k]) {
+                    humanWin[k]++
                     computerWin[k] = 6
-                    if (myWin[k] == 5) {
+                    if (humanWin[k] == 5) {
                         window.alert('你赢了')
                         over = true
                     }
@@ -165,14 +171,14 @@
             for(var j = 0; j< 15;j++) {
                 if (chessBoard[i][j] == 0) {
                     for (var k = 0; k < count; k++) {
-                        if (wins[i][j][k]) {
-                            if (myWin[k] == 1) {
+                        if (winMethods[i][j][k]) {
+                            if (humanWin[k] == 1) {
                                 myScore[i][j] += 200
-                            } else if(myWin[k] == 2) {
+                            } else if(humanWin[k] == 2) {
                                 myScore[i][j] += 400
-                            } else if(myWin[k] == 3) {
+                            } else if(humanWin[k] == 3) {
                                 myScore[i][j] += 2000
-                            } else if(myWin[k] == 4) {
+                            } else if(humanWin[k] == 4) {
                                 myScore[i][j] += 10000
                             }
 
@@ -217,9 +223,9 @@
         chessBoard[u][v] = 2
 
         for(var k = 0; k < count; k++) {
-            if (wins[u][v][k]) {
+            if (winMethods[u][v][k]) {
                 computerWin[k]++
-                myWin[k] = 6
+                humanWin[k] = 6
                 if (computerWin[k] == 5) {
                     window.alert('你输了')
                     over = true
