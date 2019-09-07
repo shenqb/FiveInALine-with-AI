@@ -129,7 +129,8 @@
         var j = Math.floor(y / 30)
         if (chessBoard[i][j] === 0) {
             oneStep(i, j, me)
-            chessBoard[i][j] = 1
+            chessBoard[i][j] = 1 //1表示人类落子
+            //判断有没有取胜
             for(var k = 0; k < count; k++) { //遍历572种赢法
                 if (winMethods[i][j][k]) { //如果在当前落子属于572种赢法下的某一种情况
                     humanChessCount[k]++ //人类方在第k赢法下落子+1
@@ -191,6 +192,8 @@
                             }
                         }
                     }
+                    console.log('空白坐标（'+i+','+j+')'+'处，人类在所有赢法下的汇总分数：'+ humanScore[i][j])
+                    console.log('空白坐标（'+i+','+j+')'+'处，计算机在所有赢法下的汇总分数：'+ humanScore[i][j])
 
                     //取对人类得分最小或者对计算机得分最大的位置进行落子
                     if (humanScore[i][j] > max) {
