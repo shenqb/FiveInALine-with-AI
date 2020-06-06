@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>shenqb-H5五子棋</title>
+    <title>小秋的应用-H5五子棋</title>
     <style>
         canvas {
             display: block;
@@ -136,7 +136,7 @@
                     humanChessCount[k]++ //人类方在第k赢法下落子+1
                     computerChessCount[k] = -1 //计算机方则在该种情况下不可能胜利了，直接设置为-1（5为胜利）
                     if (humanChessCount[k] == 5) {
-                        window.alert('你赢了')
+                        window.alert('大佬，你赢了')
                         over = true
                     }
                 }
@@ -229,7 +229,7 @@
                 computerChessCount[k]++
                 humanChessCount[k] = -1
                 if (computerChessCount[k] == 5) {
-                    window.alert('你输了')
+                    window.alert('大佬，你输了，再接再厉')
                     over = true
                 }
             }
